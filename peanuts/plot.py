@@ -1,5 +1,9 @@
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import figure
+import random
 import numpy as np
+
+plt.rcParams["figure.figsize"] = (20,4)
 
 def scatterplot(x_data, y_data, x_label="", y_label="", title="", color="r", yscale_log=False):
 
@@ -59,3 +63,97 @@ def histogram_overlaid(data1, data2, n_bins = 0, data1_name="1", data1_color="#0
     ax.set_xlabel(x_label)
     ax.set_title(title)
     ax.legend(loc = 'best')
+
+def barchart(x_data, y_data, error_data=None, x_label="", y_label="", title=""):
+    _, ax = plt.subplots()
+    # Draw bars, position them in the center of the tick mark on the x-axis
+    ax.bar(x_data, y_data, color = '#539caf', align = 'center')
+    # Draw error bars to show standard deviation, set ls to 'none'
+    # to remove line between points
+    if error_data != None:
+        ax.errorbar(x_data, y_data, yerr = error_data, color = '#297083', ls = 'none', lw = 2, capthick = 2)
+    ax.set_ylabel(y_label)
+    ax.set_xlabel(x_label)
+    ax.set_title(title)
+
+def barchart_stacked(x_data, y_data_list, y_data_names=None, colors=None, x_label="", y_label="", title=""):
+    _, ax = plt.subplots()
+
+    # Draw bars, one category at a time
+    for i in range(0, len(y_data_list)):
+        if (colors == None):
+            color = "#%06x" % random.randint(42, 0xFFFFFF)
+        else:
+            color = colors[i]
+
+        if y_data_names == None:
+            y_data_name = "#{i}".format(i=i+1)
+        else:
+            y_data_name = y_data_names[i]
+
+        if i == 0:
+            ax.bar(x_data, y_data_list[i], color = color, align='center', label = y_data_name)
+        else:
+            # For each category after the first, the bottom of the bar
+            # will be the top of the last category
+            ax.bar(x_data, y_data_list[i], color = color, bottom = y_data_list[i - 1], align='center', label = y_data_name)
+    ax.set_ylabel(y_label)
+    ax.set_xlabel(x_label)
+    ax.set_title(title)
+    ax.legend(loc = 'upper right')
+
+def barchart_grouped(x_data, y_data_list, y_data_names=None, colors=None, x_label="", y_label="", title=""):
+    _, ax = plt.subplots()
+    # Total width for all bars at one x location
+    total_width = 0.8
+    # the x locations for the groups
+    ind = np.arange(len(y_data_list[0]))
+    # Width of each individual bar
+    ind_width = total_width / len(y_data_list)
+    # This centers each cluster of bars about the x tick mark
+    alteration = np.arange(-(total_width/2), total_width/2 , ind_width)
+
+    # Draw bars, one category at a time
+    for i in range(0, len(y_data_list)):
+        if (colors == None):
+            color = "#%06x" % random.randint(42, 0xFFFFFF)
+        else:
+            color = colors[i]
+
+        if y_data_names == None:
+            y_data_name = "#{i}".format(i=i+1)
+        else:
+            y_data_name = y_data_names[i]
+
+        # Move the bar to the right on the x-axis so it doesn't
+        # overlap with previously drawn ones
+        ax.bar(ind + alteration[i], y_data_list[i], width=ind_width, color = color, align='center', label=y_data_name)
+    ax.set_ylabel(y_label)
+    ax.set_xlabel(x_label)
+    ax.set_title(title)
+    ax.set_xticks(ind - ind_width/2)
+    ax.set_xticklabels(x_data)
+    ax.legend(loc = 'upper right')
+
+def boxplot(x_data, y_data, base_color="#539caf", median_color="#297083", x_label="", y_label="", title=""):
+    _, ax = plt.subplots()
+
+    # Draw boxplots, specifying desired style
+    ax.boxplot(y_data
+               # patch_artist must be True to control box fill
+               , patch_artist = True
+               # Properties of median line
+               , medianprops = {'color': median_color}
+               # Properties of box
+               , boxprops = {'color': base_color, 'facecolor': base_color}
+               # Properties of whiskers
+               , whiskerprops = {'color': base_color}
+               # Properties of whisker caps
+               , capprops = {'color': base_color})
+
+    # By default, the tick label starts at 1 and increments by 1 for
+    # each box drawn. This sets the labels to the ones we want
+    ax.set_xticklabels(x_data)
+    ax.set_ylabel(y_label)
+    ax.set_xlabel(x_label)
+    ax.set_title(title)
