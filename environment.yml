@@ -13,3 +13,4 @@ dependencies:
    - jupyterlab-plotly-extension
    - bokeh
    - psutil
+   - docxtpl
