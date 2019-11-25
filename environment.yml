@@ -1,0 +1,16 @@
+name: peanuts
+dependencies:
+   - jupyter
+   - jupyterlab
+   - jupyter_contrib_nbextensions
+   - pyathena
+   - pandas
+   - numpy
+   - seaborn
+   - matplotlib
+   - plotly
+   - vincent
+   - jupyterlab-plotly-extension
+   - bokeh
+   - psutil
+   - docxtpl
