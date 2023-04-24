@@ -1,0 +1,70 @@
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.8/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/client.py", line 1112, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/util.py", line 74, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/util.py", line 53, in just_run
+    return loop.run_until_complete(coro)
+  File "/opt/conda/lib/python3.8/asyncio/base_events.py", line 616, in run_until_complete
+    return future.result()
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/client.py", line 553, in async_execute
+    await self.async_execute_cell(
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/client.py", line 857, in async_execute_cell
+    self._check_raise_for_error(cell, exec_reply)
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/client.py", line 760, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+histData = []
+for elem in uniqSex:
+    histData.append(df[df['sex'] == elem]['case'].values)
+    
+plt.hist(tuple(histData), bins=10, normed = True, histtype='bar', label=map(lambda x: 'Sex' + str(x), uniqSex))
+plt.legend()
+plt.ylabel('Count')
+plt.title("Histogram for eac sex")
+plt.show()
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mAttributeError[0m                            Traceback (most recent call last)
+[0;32m<ipython-input-5-d412edddf7dc>[0m in [0;36m<module>[0;34m[0m
+[1;32m      3[0m     [0mhistData[0m[0;34m.[0m[0mappend[0m[0;34m([0m[0mdf[0m[0;34m[[0m[0mdf[0m[0;34m[[0m[0;34m'sex'[0m[0;34m][0m [0;34m==[0m [0melem[0m[0;34m][0m[0;34m[[0m[0;34m'case'[0m[0;34m][0m[0;34m.[0m[0mvalues[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      4[0m [0;34m[0m[0m
+[0;32m----> 5[0;31m [0mplt[0m[0;34m.[0m[0mhist[0m[0;34m([0m[0mtuple[0m[0;34m([0m[0mhistData[0m[0;34m)[0m[0;34m,[0m [0mbins[0m[0;34m=[0m[0;36m10[0m[0;34m,[0m [0mnormed[0m [0;34m=[0m [0;32mTrue[0m[0;34m,[0m [0mhisttype[0m[0;34m=[0m[0;34m'bar'[0m[0;34m,[0m [0mlabel[0m[0;34m=[0m[0mmap[0m[0;34m([0m[0;32mlambda[0m [0mx[0m[0;34m:[0m [0;34m'Sex'[0m [0;34m+[0m [0mstr[0m[0;34m([0m[0mx[0m[0;34m)[0m[0;34m,[0m [0muniqSex[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      6[0m [0mplt[0m[0;34m.[0m[0mlegend[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      7[0m [0mplt[0m[0;34m.[0m[0mylabel[0m[0;34m([0m[0;34m'Count'[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/conda/lib/python3.8/site-packages/matplotlib/pyplot.py[0m in [0;36mhist[0;34m(x, bins, range, density, weights, cumulative, bottom, histtype, align, orientation, rwidth, log, color, label, stacked, data, **kwargs)[0m
+[1;32m   2820[0m         [0morientation[0m[0;34m=[0m[0;34m'vertical'[0m[0;34m,[0m [0mrwidth[0m[0;34m=[0m[0;32mNone[0m[0;34m,[0m [0mlog[0m[0;34m=[0m[0;32mFalse[0m[0;34m,[0m [0mcolor[0m[0;34m=[0m[0;32mNone[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   2821[0m         label=None, stacked=False, *, data=None, **kwargs):
+[0;32m-> 2822[0;31m     return gca().hist(
+[0m[1;32m   2823[0m         [0mx[0m[0;34m,[0m [0mbins[0m[0;34m=[0m[0mbins[0m[0;34m,[0m [0mrange[0m[0;34m=[0m[0mrange[0m[0;34m,[0m [0mdensity[0m[0;34m=[0m[0mdensity[0m[0;34m,[0m [0mweights[0m[0;34m=[0m[0mweights[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   2824[0m         [0mcumulative[0m[0;34m=[0m[0mcumulative[0m[0;34m,[0m [0mbottom[0m[0;34m=[0m[0mbottom[0m[0;34m,[0m [0mhisttype[0m[0;34m=[0m[0mhisttype[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/conda/lib/python3.8/site-packages/matplotlib/__init__.py[0m in [0;36minner[0;34m(ax, data, *args, **kwargs)[0m
+[1;32m   1350[0m     [0;32mdef[0m [0minner[0m[0;34m([0m[0max[0m[0;34m,[0m [0;34m*[0m[0margs[0m[0;34m,[0m [0mdata[0m[0;34m=[0m[0;32mNone[0m[0;34m,[0m [0;34m**[0m[0mkwargs[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   1351[0m         [0;32mif[0m [0mdata[0m [0;32mis[0m [0;32mNone[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 1352[0;31m             [0;32mreturn[0m [0mfunc[0m[0;34m([0m[0max[0m[0;34m,[0m [0;34m*[0m[0mmap[0m[0;34m([0m[0msanitize_sequence[0m[0;34m,[0m [0margs[0m[0;34m)[0m[0;34m,[0m [0;34m**[0m[0mkwargs[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m   1353[0m [0;34m[0m[0m
+[1;32m   1354[0m         [0mbound[0m [0;34m=[0m [0mnew_sig[0m[0;34m.[0m[0mbind[0m[0;34m([0m[0max[0m[0;34m,[0m [0;34m*[0m[0margs[0m[0;34m,[0m [0;34m**[0m[0mkwargs[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/conda/lib/python3.8/site-packages/matplotlib/axes/_axes.py[0m in [0;36mhist[0;34m(self, x, bins, range, density, weights, cumulative, bottom, histtype, align, orientation, rwidth, log, color, label, stacked, **kwargs)[0m
+[1;32m   6888[0m             [0;32mif[0m [0mpatch[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   6889[0m                 [0mp[0m [0;34m=[0m [0mpatch[0m[0;34m[[0m[0;36m0[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 6890[0;31m                 [0mp[0m[0;34m.[0m[0mupdate[0m[0;34m([0m[0mkwargs[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m   6891[0m                 [0;32mif[0m [0mlbl[0m [0;32mis[0m [0;32mnot[0m [0;32mNone[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   6892[0m                     [0mp[0m[0;34m.[0m[0mset_label[0m[0;34m([0m[0mlbl[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/conda/lib/python3.8/site-packages/matplotlib/artist.py[0m in [0;36mupdate[0;34m(self, props)[0m
+[1;32m   1060[0m                     [0mfunc[0m [0;34m=[0m [0mgetattr[0m[0;34m([0m[0mself[0m[0;34m,[0m [0;34mf"set_{k}"[0m[0;34m,[0m [0;32mNone[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   1061[0m                     [0;32mif[0m [0;32mnot[0m [0mcallable[0m[0;34m([0m[0mfunc[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 1062[0;31m                         raise AttributeError(f"{type(self).__name__!r} object "
+[0m[1;32m   1063[0m                                              f"has no property {k!r}")
+[1;32m   1064[0m                     [0mret[0m[0;34m.[0m[0mappend[0m[0;34m([0m[0mfunc[0m[0;34m([0m[0mv[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mAttributeError[0m: 'Rectangle' object has no property 'normed'
+AttributeError: 'Rectangle' object has no property 'normed'
+

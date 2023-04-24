@@ -1,0 +1,115 @@
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.8/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/client.py", line 1112, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/util.py", line 74, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/util.py", line 53, in just_run
+    return loop.run_until_complete(coro)
+  File "/opt/conda/lib/python3.8/asyncio/base_events.py", line 616, in run_until_complete
+    return future.result()
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/client.py", line 553, in async_execute
+    await self.async_execute_cell(
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/client.py", line 857, in async_execute_cell
+    self._check_raise_for_error(cell, exec_reply)
+  File "/opt/conda/lib/python3.8/site-packages/nbclient/client.py", line 760, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+def stepwise_selection(X, y, 
+                       initial_list=[], 
+                       threshold_in=0.01, 
+                       threshold_out = 0.05, 
+                       verbose=True):
+    """ Perform a forward-backward feature selection 
+    based on p-value from statsmodels.api.OLS
+    Arguments:
+        X - pandas.DataFrame with candidate features
+        y - list-like with the target
+        initial_list - list of features to start with (column names of X)
+        threshold_in - include a feature if its p-value < threshold_in
+        threshold_out - exclude a feature if its p-value > threshold_out
+        verbose - whether to print the sequence of inclusions and exclusions
+    Returns: list of selected features 
+    Always set threshold_in < threshold_out to avoid infinite looping.
+    See https://en.wikipedia.org/wiki/Stepwise_regression for the details
+    """
+    included = list(initial_list)
+    while True:
+        changed=False
+        # forward step
+        excluded = list(set(X.columns)-set(included))
+        new_pval = pd.Series(index=excluded)
+        for new_column in excluded:
+            model = sm.OLS(y, sm.add_constant(pd.DataFrame(X[included+[new_column]]))).fit()
+            new_pval[new_column] = model.pvalues[new_column]
+        best_pval = new_pval.min()
+        if best_pval < threshold_in:
+            best_feature = new_pval.argmin()
+            included.append(best_feature)
+            changed=True
+            if verbose:
+                print('Add  {:30} with p-value {:.6}'.format(best_feature, best_pval))
+
+        # backward step
+        model = sm.OLS(y, sm.add_constant(pd.DataFrame(X[included]))).fit()
+        # use all coefs except intercept
+        pvalues = model.pvalues.iloc[1:]
+        worst_pval = pvalues.max() # null if pvalues is empty
+        if worst_pval > threshold_out:
+            changed=True
+            worst_feature = pvalues.argmax()
+            included.remove(worst_feature)
+            if verbose:
+                print('Drop {:30} with p-value {:.6}'.format(worst_feature, worst_pval))
+        if not changed:
+            break
+    return included
+
+result = stepwise_selection(x3, y3, threshold_in=0.05, threshold_out = 0.10)
+
+print('resulting features:')
+print(result)
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mKeyError[0m                                  Traceback (most recent call last)
+[0;32m<ipython-input-10-5c21c87b68a2>[0m in [0;36m<module>[0;34m[0m
+[1;32m     49[0m     [0;32mreturn[0m [0mincluded[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     50[0m [0;34m[0m[0m
+[0;32m---> 51[0;31m [0mresult[0m [0;34m=[0m [0mstepwise_selection[0m[0;34m([0m[0mx3[0m[0;34m,[0m [0my3[0m[0;34m,[0m [0mthreshold_in[0m[0;34m=[0m[0;36m0.05[0m[0;34m,[0m [0mthreshold_out[0m [0;34m=[0m [0;36m0.10[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     52[0m [0;34m[0m[0m
+[1;32m     53[0m [0mprint[0m[0;34m([0m[0;34m'resulting features:'[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m<ipython-input-10-5c21c87b68a2>[0m in [0;36mstepwise_selection[0;34m(X, y, initial_list, threshold_in, threshold_out, verbose)[0m
+[1;32m     35[0m [0;34m[0m[0m
+[1;32m     36[0m         [0;31m# backward step[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 37[0;31m         [0mmodel[0m [0;34m=[0m [0msm[0m[0;34m.[0m[0mOLS[0m[0;34m([0m[0my[0m[0;34m,[0m [0msm[0m[0;34m.[0m[0madd_constant[0m[0;34m([0m[0mpd[0m[0;34m.[0m[0mDataFrame[0m[0;34m([0m[0mX[0m[0;34m[[0m[0mincluded[0m[0;34m][0m[0;34m)[0m[0;34m)[0m[0;34m)[0m[0;34m.[0m[0mfit[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     38[0m         [0;31m# use all coefs except intercept[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     39[0m         [0mpvalues[0m [0;34m=[0m [0mmodel[0m[0;34m.[0m[0mpvalues[0m[0;34m.[0m[0miloc[0m[0;34m[[0m[0;36m1[0m[0;34m:[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/conda/lib/python3.8/site-packages/pandas/core/frame.py[0m in [0;36m__getitem__[0;34m(self, key)[0m
+[1;32m   3028[0m             [0;32mif[0m [0mis_iterator[0m[0;34m([0m[0mkey[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   3029[0m                 [0mkey[0m [0;34m=[0m [0mlist[0m[0;34m([0m[0mkey[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 3030[0;31m             [0mindexer[0m [0;34m=[0m [0mself[0m[0;34m.[0m[0mloc[0m[0;34m.[0m[0m_get_listlike_indexer[0m[0;34m([0m[0mkey[0m[0;34m,[0m [0maxis[0m[0;34m=[0m[0;36m1[0m[0;34m,[0m [0mraise_missing[0m[0;34m=[0m[0;32mTrue[0m[0;34m)[0m[0;34m[[0m[0;36m1[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m   3031[0m [0;34m[0m[0m
+[1;32m   3032[0m         [0;31m# take() does not accept boolean indexers[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/conda/lib/python3.8/site-packages/pandas/core/indexing.py[0m in [0;36m_get_listlike_indexer[0;34m(self, key, axis, raise_missing)[0m
+[1;32m   1264[0m             [0mkeyarr[0m[0;34m,[0m [0mindexer[0m[0;34m,[0m [0mnew_indexer[0m [0;34m=[0m [0max[0m[0;34m.[0m[0m_reindex_non_unique[0m[0;34m([0m[0mkeyarr[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   1265[0m [0;34m[0m[0m
+[0;32m-> 1266[0;31m         [0mself[0m[0;34m.[0m[0m_validate_read_indexer[0m[0;34m([0m[0mkeyarr[0m[0;34m,[0m [0mindexer[0m[0;34m,[0m [0maxis[0m[0;34m,[0m [0mraise_missing[0m[0;34m=[0m[0mraise_missing[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m   1267[0m         [0;32mreturn[0m [0mkeyarr[0m[0;34m,[0m [0mindexer[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   1268[0m [0;34m[0m[0m
+
+[0;32m/opt/conda/lib/python3.8/site-packages/pandas/core/indexing.py[0m in [0;36m_validate_read_indexer[0;34m(self, key, indexer, axis, raise_missing)[0m
+[1;32m   1306[0m             [0;32mif[0m [0mmissing[0m [0;34m==[0m [0mlen[0m[0;34m([0m[0mindexer[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   1307[0m                 [0maxis_name[0m [0;34m=[0m [0mself[0m[0;34m.[0m[0mobj[0m[0;34m.[0m[0m_get_axis_name[0m[0;34m([0m[0maxis[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 1308[0;31m                 [0;32mraise[0m [0mKeyError[0m[0;34m([0m[0;34mf"None of [{key}] are in the [{axis_name}]"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m   1309[0m [0;34m[0m[0m
+[1;32m   1310[0m             [0max[0m [0;34m=[0m [0mself[0m[0;34m.[0m[0mobj[0m[0;34m.[0m[0m_get_axis[0m[0;34m([0m[0maxis[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mKeyError[0m: "None of [Int64Index([0], dtype='int64')] are in the [columns]"
+KeyError: "None of [Int64Index([0], dtype='int64')] are in the [columns]"
+
